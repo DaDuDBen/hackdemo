@@ -1,8 +1,14 @@
 # Backend (FastAPI)
 
-This service exposes REST APIs for invoice tracking, reminder automation, and escalation workflows.
+## Modules
 
-## Quick start
+- `services/rule_engine.py` - deterministic business logic
+- `services/ai_service.py` - LLM-agnostic text generation wrapper
+- `services/email_service.py` - SMTP sender
+- `services/legal_templates.py` - legal notice template renderer
+- `jobs/scheduler.py` - daily reminder/escalation automation
+
+## Run
 
 ```bash
 python -m venv .venv
@@ -12,25 +18,10 @@ cp ../.env.example ../.env
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Open http://localhost:8000/docs for the OpenAPI UI.
+## Manual test
 
-## Stage 3 + 4 Highlights
-
-### Rule engine (`app/services/rule_engine.py`)
-- `calculate_days_overdue()`
-- `determine_stage()`
-- `calculate_interest()`
-- `process_invoice()`
-
-Stage mapping:
-- `0–7` days -> `gentle`
-- `8–30` days -> `firm`
-- `31–45` days -> `pre_escalation`
-- `>45` days -> `escalation_ready`
-
-### API endpoints
-- `POST /invoices`
-- `GET /invoices`
-- `GET /invoices/{id}`
-- `POST /invoices/{id}/mark-paid`
-- `GET /invoices/{id}/timeline`
+```bash
+PYTHONPATH=.. python ../scripts/seed_demo.py
+curl -X POST http://localhost:8000/system/run-daily-job
+curl http://localhost:8000/invoices
+```

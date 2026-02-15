@@ -24,7 +24,6 @@ router = APIRouter(prefix="/invoices", tags=["invoices"])
 
 @router.post("", response_model=InvoiceRead, status_code=status.HTTP_201_CREATED)
 def create_invoice(payload: InvoiceCreate, db: Session = Depends(get_db)) -> Invoice:
-    """Create a new invoice from manual input."""
     existing = db.scalar(select(Invoice).where(Invoice.invoice_number == payload.invoice_number))
     if existing:
         raise HTTPException(status_code=409, detail="Invoice number already exists")
@@ -41,10 +40,9 @@ def create_invoice(payload: InvoiceCreate, db: Session = Depends(get_db)) -> Inv
 
 @router.get("", response_model=list[InvoiceListItem])
 def list_invoices(db: Session = Depends(get_db)) -> list[InvoiceListItem]:
-    """Return all invoices with computed overdue and interest fields."""
     invoices = db.scalars(select(Invoice).order_by(Invoice.created_at.desc())).all()
-
     response: list[InvoiceListItem] = []
+
     for invoice in invoices:
         result = process_invoice(invoice)
         response.append(
@@ -61,7 +59,6 @@ def list_invoices(db: Session = Depends(get_db)) -> list[InvoiceListItem]:
 
 @router.get("/{invoice_id}", response_model=InvoiceDetailResponse)
 def get_invoice(invoice_id: int, db: Session = Depends(get_db)) -> InvoiceDetailResponse:
-    """Return invoice details plus computed rule output."""
     invoice = db.get(Invoice, invoice_id)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
@@ -79,7 +76,6 @@ def get_invoice(invoice_id: int, db: Session = Depends(get_db)) -> InvoiceDetail
 
 @router.post("/{invoice_id}/mark-paid", response_model=MarkPaidResponse)
 def mark_invoice_paid(invoice_id: int, db: Session = Depends(get_db)) -> MarkPaidResponse:
-    """Mark invoice as paid and lock further escalation processing."""
     invoice = db.get(Invoice, invoice_id)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
@@ -97,7 +93,6 @@ def mark_invoice_paid(invoice_id: int, db: Session = Depends(get_db)) -> MarkPai
 
 @router.get("/{invoice_id}/timeline", response_model=list[InvoiceTimelineItem])
 def get_invoice_timeline(invoice_id: int, db: Session = Depends(get_db)) -> list[InvoiceTimelineItem]:
-    """Return reminder/escalation timeline for a specific invoice."""
     invoice = db.get(Invoice, invoice_id)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")

@@ -1,13 +1,18 @@
 # Frontend (React + Vite)
 
-This app provides invoice creation, invoice list/detail pages, and timeline UI.
+## Features
 
-## Quick start
+- Invoice creation form
+- Invoice list
+- Invoice detail view
+- Timeline display
+- Escalation badge
+
+## Run
 
 ```bash
-cd frontend
 npm install
 npm run dev
 ```
 
-The dev server starts on http://localhost:5173.
+Set API base URL in root `.env` as `VITE_API_BASE_URL` if needed.
