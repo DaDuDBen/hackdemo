@@ -1,10 +1,16 @@
-"""FastAPI entrypoint for the Invoice Escalation System.
-
-Stage 1 intentionally keeps this minimal while we scaffold modules in later stages.
-"""
+"""FastAPI entrypoint for the Invoice Escalation System."""
 from fastapi import FastAPI
 
-app = FastAPI(title="Invoice Escalation System")
+from app.core.config import settings
+from app.db import init_db
+
+app = FastAPI(title=settings.app_name)
+
+
+@app.on_event("startup")
+def on_startup() -> None:
+    """Initialize local SQLite tables during service boot."""
+    init_db()
 
 
 @app.get("/health", tags=["system"])

@@ -1,14 +1,14 @@
 # AI-Powered Automated Invoice Escalation System (MSMEs)
 
-This repository is being built in staged increments. Stage 1 provides a production-style project scaffold with FastAPI backend and React frontend foundations.
+This repository is being built in staged increments. Stage 1 provided the project scaffold; Stage 2 adds the SQLite data model and state transition foundations.
 
-## Stage 1 Deliverables
+## Stage 2 Deliverables
 
-- Modular folder structure for backend, frontend, scripts, and docs.
-- Python dependencies and frontend package manifest.
-- Environment variable template for app, DB, scheduler, SMTP, and AI provider configs.
-- Minimal FastAPI app with health endpoint.
-- Local setup instructions.
+- SQLite setup via SQLAlchemy engine/session.
+- Invoice and ReminderLog ORM tables.
+- Status and stage enums.
+- Explicit state transition map.
+- DB initialization on FastAPI startup.
 
 ## Repository structure
 
@@ -18,10 +18,19 @@ This repository is being built in staged increments. Stage 1 provides a producti
 │   ├── app/
 │   │   ├── api/
 │   │   ├── core/
+│   │   │   └── config.py
 │   │   ├── db/
+│   │   │   ├── base.py
+│   │   │   ├── init_db.py
+│   │   │   └── session.py
 │   │   ├── jobs/
 │   │   ├── models/
+│   │   │   ├── enums.py
+│   │   │   ├── invoice.py
+│   │   │   ├── reminder_log.py
+│   │   │   └── state_machine.py
 │   │   ├── schemas/
+│   │   │   └── invoice.py
 │   │   ├── services/
 │   │   ├── utils/
 │   │   └── main.py
@@ -30,11 +39,6 @@ This repository is being built in staged increments. Stage 1 provides a producti
 ├── frontend/
 │   ├── public/
 │   ├── src/
-│   │   ├── api/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── types/
-│   │   └── utils/
 │   ├── package.json
 │   └── README.md
 ├── scripts/
@@ -65,4 +69,5 @@ npm run dev
 ## Stage-by-stage implementation
 
 - Stage 1: Project structure ✅
-- Stage 2+: Database, rule engine, APIs, AI layer, automation, email, UI, escalation template, demo flow (in upcoming commits/stages).
+- Stage 2: Database + models ✅
+- Stage 3+: Rule engine, APIs, AI layer, automation, email, UI, escalation template, demo flow.
