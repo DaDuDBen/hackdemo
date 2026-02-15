@@ -1,6 +1,7 @@
 """FastAPI entrypoint for the Invoice Escalation System."""
 from fastapi import FastAPI
 
+from app.api import invoices_router
 from app.core.config import settings
 from app.db import init_db
 
@@ -11,6 +12,9 @@ app = FastAPI(title=settings.app_name)
 def on_startup() -> None:
     """Initialize local SQLite tables during service boot."""
     init_db()
+
+
+app.include_router(invoices_router)
 
 
 @app.get("/health", tags=["system"])

@@ -29,11 +29,44 @@ class InvoiceRead(InvoiceBase):
     current_stage: ReminderStage
     reminder_count: int
     next_action_date: date | None
+    escalation_consent: bool
+    paid_at: datetime | None
     created_at: datetime
     updated_at: datetime
 
     class Config:
         from_attributes = True
+
+
+class InvoiceListItem(InvoiceRead):
+    overdue_days: int
+    interest_amount: Decimal
+
+
+class InvoiceTimelineItem(BaseModel):
+    id: int
+    stage: ReminderStage
+    channel: str
+    recipient: str
+    subject: str
+    body: str
+    action_type: str
+    sent_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class InvoiceDetailResponse(BaseModel):
+    invoice: InvoiceRead
+    overdue_days: int
+    interest_amount: Decimal
+
+
+class MarkPaidResponse(BaseModel):
+    id: int
+    status: InvoiceStatus
+    paid_at: datetime
 
 
 class ReminderLogRead(BaseModel):
